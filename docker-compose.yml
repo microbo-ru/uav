@@ -1,0 +1,52 @@
+services:
+
+  charts:
+    build: ./charts
+    ports:
+      - 8501:8501
+    command: streamlit run main.py
+    volumes:
+      - ./charts:/usr/src/app
+
+  web:
+    build: ./web
+    ports:
+      - 8000:8000
+    command: uvicorn main:app --host 0.0.0.0 --reload
+    volumes:
+      - ./web:/usr/src/app
+      - ./tmp:/usr/src/app/tmp
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  worker:
+    build: ./web
+    command: celery worker --app=worker.celery --loglevel=info --logfile=logs/celery.log --config=celeryconfig -E
+    volumes:
+      - ./web:/usr/src/app
+      - ./tmp:/usr/src/app/tmp
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+
+  redis:
+    image: redis:7-alpine
+
+  flower:
+    image: mher/flower
+    # command: celery --broker=redis://redis:6379/0 flower --port=5555
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      # - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+      - worker
