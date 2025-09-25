@@ -1,4 +1,19 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$'
 services:
+  loki:
+    image: grafana/loki:3.5.0
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
 
   charts:
     build: ./charts
@@ -21,6 +36,8 @@ services:
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - redis
+      - loki
+    logging: *default-logging
 
   worker:
     build: ./web
@@ -50,3 +67,40 @@ services:
       - web
       - redis
       - worker
+  prometheus:
+    image: prom/prometheus:v3.3.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+      - --enable-feature=exemplar-storage
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  tempo:
+    image: grafana/tempo:2.7.2
+    command: [ "-config.file=/etc/tempo.yml", "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./etc/tempo/tempo.yml:/etc/tempo.yml
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:12.0.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/dashboards:/etc/grafana/dashboards
+    depends_on:
+      - loki
+      - prometheus
+    logging: *default-logging

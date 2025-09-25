@@ -8,6 +8,9 @@ from typing import Any, Callable, Set, TypeVar
 from fastapi.openapi.utils import generate_operation_id
 from fastapi.routing import APIRoute
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 from worker import create_task, terminate_task
 
@@ -37,6 +40,7 @@ def health():
 def submit_task(
     xslx_file: UploadFile = File(..., description="*.xlsx file with data"),
 ):
+    logger.info("Root endpoint accessed.")
     file_location = f"./tmp/{xslx_file.filename}"
     with open(file_location, "wb") as f:
         f.write(xslx_file.file.read())
