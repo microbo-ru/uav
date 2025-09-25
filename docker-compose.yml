@@ -24,7 +24,7 @@ services:
 
   worker:
     build: ./web
-    command: celery worker --app=worker.celery --loglevel=info --logfile=logs/celery.log --config=celeryconfig -E
+    command: celery --app worker.celery worker -l info --logfile=logs/celery.log
     volumes:
       - ./web:/usr/src/app
       - ./tmp:/usr/src/app/tmp
