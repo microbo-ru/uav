@@ -54,7 +54,7 @@ logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
     }
 })
 def health():
-    logging.info("health 1")
+    logging.info("health 2")
     return JSONResponse({}, status_code=200)
 
 @app.post("/task", status_code=201, responses={
