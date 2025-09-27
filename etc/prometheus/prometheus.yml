@@ -34,19 +34,3 @@ scrape_configs:
 
     static_configs:
       - targets: ['app-a:8000']
-
-  - job_name: 'app-b'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-
-    static_configs:
-      - targets: ['app-b:8000']
-
-  - job_name: 'app-c'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-
-    static_configs:
-      - targets: ['app-c:8000']

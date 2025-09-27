@@ -7,3 +7,7 @@
 ```
 http://localhost:8000/docs
 ```
+
+# refs:
+https://habr.com/ru/companies/slurm/articles/741670/
+https://github.com/blueswen/fastapi-observability/tree/main

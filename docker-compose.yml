@@ -23,15 +23,17 @@ services:
     volumes:
       - ./charts:/usr/src/app
 
-  web:
+  app-a:
     build: ./web
     ports:
       - 8000:8000
-    command: uvicorn main:app --host 0.0.0.0 --reload
+    # command: uvicorn main:app --host 0.0.0.0 --reload
+    command: python main.py
     volumes:
       - ./web:/usr/src/app
       - ./tmp:/usr/src/app/tmp
     environment:
+      - APP_NAME="app-a"
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
@@ -49,7 +51,7 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
-      - web
+      - app-a
       - redis
 
   redis:
@@ -64,7 +66,7 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       # - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
-      - web
+      - app-a
       - redis
       - worker
   prometheus:
