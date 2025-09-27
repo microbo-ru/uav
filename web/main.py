@@ -26,6 +26,7 @@ app = FastAPI()
     }
 })
 def health():
+    logger.info("health")
     return JSONResponse({}, status_code=200)
 
 @app.post("/task", status_code=201, responses={
@@ -40,7 +41,7 @@ def health():
 def submit_task(
     xslx_file: UploadFile = File(..., description="*.xlsx file with data"),
 ):
-    logger.info("Root endpoint accessed.")
+    logger.info("submit_task")
     file_location = f"./tmp/{xslx_file.filename}"
     with open(file_location, "wb") as f:
         f.write(xslx_file.file.read())
