@@ -2,6 +2,9 @@ import re
 from typing import Any
 # https://github.com/contrailcirrus/pycontrails/blob/main/pycontrails/core/flightplan.py
 
+import logging
+logger = logging.getLogger(__name__)
+
 def parse_atc_plan(atc_plan: str) -> dict[str, str]:
     """Parse an ATC flight plan string into a dictionary.
 
@@ -179,9 +182,12 @@ def parse_atc_plan(atc_plan: str) -> dict[str, str]:
 
     return flightplan
 
-import re
 
-def extract_subfields(row):
+def parser_2025(row):
+
+    logger.info("2025")
+    logger.info(row)
+
     center_match = row['Центр ЕС ОрВД']
 
     # Extract Registration Numbers
@@ -211,4 +217,10 @@ def extract_subfields(row):
         'Flight Zones': zones_str,
         'Departure Coordinates': departure,
         'Arrival Coordinates': arrival
+    }
+
+def parser_2024_msk(row):
+    logger.info("Москва")
+    return {
+        'Center': "TBD"
     }

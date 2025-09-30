@@ -1,0 +1,4 @@
+COL_REGION = "Регион"
+COL_FLIGHT = "Рейс"
+COL_BOARD= "Борт"
+DATA_ROW = {COL_REGION: "TBD0", COL_FLIGHT: "TBD1", COL_BOARD: "TBD2"}

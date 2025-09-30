@@ -9,17 +9,49 @@ import logging
 from celery import Celery
 from celery import current_task
 import time
+from parser_2025 import parser_2025
+from parser_2024 import parser_2024
+from parser_2024_spb import parser_2024_spb
+from pathlib import Path
 
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379")
 celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379")
 logger = logging.getLogger('celery.task')
 
+def get_parser(sheet_name, df_head):
+    logger.info(df_head)
+
+    head_as_string = df_head.to_string()
+    if sheet_name in ["Москва", ""]:
+        return lambda t: parser_2024(t)
+    if sheet_name in ["Санкт-Петербург"]:
+        return lambda t: parser_2024_spb(t)
+    elif "Центр ЕС ОрВД" in head_as_string:
+        return lambda t: parser_2025(t)
+    else:
+        return None
+
 @celery.task(name="create_task")
 def create_task(path):
     logger.info("Executing create_task with id: %s and path %s", create_task.request.id, path)
 
-    time.sleep(60) #sec
+    input_path = Path(path)
+    output_path = input_path.with_suffix(".csv")
+    xls = pd.ExcelFile(path)
+
+    all_dataframes = []
+    for sheet_name in xls.sheet_names[:2]:
+        df = pd.read_excel(xls, sheet_name)
+        parser = get_parser(sheet_name, df.head(3))
+        if parser is not None:
+            extracted_columns = df.apply(parser, axis=1, result_type="expand")
+            all_dataframes.append(extracted_columns)
+        else:
+            logger.info("Parser not found")
+    final_df = pd.concat(all_dataframes)
+    final_df.to_csv(str(output_path), index=False, encoding='utf-8-sig')
+
     return True
 
 @celery.task(name="terminate_task")
