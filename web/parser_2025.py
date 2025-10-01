@@ -246,6 +246,8 @@ def parser_2025(row):
     elif len(shr_cut) == 1:
         set_and_log(res, COL_AB, shr_cut[0][1][:5], row.name)
         set_and_log(res, COL_DEP, shr_cut[0][1][5:], row.name)
+        set_and_log(res, COL_AP, None, row.name)
+        set_and_log(res, COL_ARR, None, row.name)
         route_idx = shr_cut[0][0] + 1
         route = shr_list[route_idx]
         set_and_log(res, COL_ROUTE, route, row.name)

@@ -43,16 +43,11 @@ def create_task(path):
         safe_sheet_name = sheet_name.replace(" ", "_")
         output_path = str(input_path.with_suffix(".csv"))
         output_path = output_path[:-4] + f"_{safe_sheet_name}" + output_path[-4:]
-        # print(output_path)
         df = pd.read_excel(xls, sheet_name, nrows=3)
         parser, skiprows = get_parser(sheet_name, df)
-
         df = pd.read_excel(xls, sheet_name, skiprows=skiprows)
-        print(df)
         if parser is not None:
-            # extracted_columns = df.apply(parser, axis=1, result_type="expand")
             extracted_columns = df.apply(parser, axis=1, result_type="expand")
-            print(extracted_columns)
             extracted_columns.to_csv(output_path, index=False, encoding='utf-8-sig')
         else:
             logger.info("Parser not found")
