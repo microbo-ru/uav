@@ -19,9 +19,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 def parser_2024_msk(row):
-    logger.info(row)
-    DATA_ROW[COL_REGION] = "Москва"
-    DATA_ROW[COL_DATE] = row["Дата полёта"]
+    # logger.info(row)
+    res = DATA_ROW.copy()
+    res[COL_REGION] = "Москва"
+    res[COL_DATE] = row["Дата полёта"]
     # DATA_ROW[COL_FLIGHT] = row[COL_FLIGHT]
     # DATA_ROW[COL_BOARD] = row[COL_BOARD]
     # DATA_ROW[COL_TYPE] = row[COL_TYPE]
@@ -34,4 +35,4 @@ def parser_2024_msk(row):
     # DATA_ROW[COL_ROUTE] = row[COL_ROUTE]
     # DATA_ROW[COL_FIELD18] = row[COL_FIELD18]
 
-    return DATA_ROW
+    return res

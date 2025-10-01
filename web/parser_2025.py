@@ -1,6 +1,21 @@
 import re
 from typing import Any
+import random
 # https://github.com/contrailcirrus/pycontrails/blob/main/pycontrails/core/flightplan.py
+from parser_common import DATA_ROW, \
+COL_REGION, \
+COL_DATE, \
+COL_FLIGHT, \
+COL_BOARD, \
+COL_TYPE, \
+COL_DEP, \
+COL_ARR, \
+COL_APB, \
+COL_AB, \
+COL_ARP, \
+COL_AP, \
+COL_ROUTE, \
+COL_FIELD18
 
 import logging
 logger = logging.getLogger(__name__)
@@ -184,43 +199,54 @@ def parse_atc_plan(atc_plan: str) -> dict[str, str]:
 
 
 def parser_2025(row):
-
-    logger.info("2025")
-    logger.info(row)
-
-    center_match = row['Центр ЕС ОрВД']
-
-    # Extract Registration Numbers
-    reg_numbers_match = re.findall(r'REG/[^\s]+', row['SHR'])
-    reg_numbers = ';'.join([num.split('/')[1].strip() for num in reg_numbers_match])
+    # logger.info(row)
+    res = DATA_ROW.copy()
+    res[COL_REGION] = row['Центр ЕС ОрВД']
+    return res
     
-    # Extract Operator Names & Phone Numbers
-    op_names_and_phones = re.findall(r'\+?\d{1,}\s?[-\s]?\w+\s\w+', row['SHR'])
-    ops = '; '.join(op_names_and_phones)
-    
-    # Extract Flight Zone Coordinates
-    zone_coord_pattern = r'/ZONA\s(?:[A-Za-z0-9]+|[A-Za-z]+\s\d+)\/'
-    zones = re.findall(zone_coord_pattern, row['SHR'])
-    zones_str = '; '.join(zones)
-    
-    # Extract Departure and Arrival Coordinates
-    departure_match = re.search(r'-DEP/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
-    arrival_match = re.search(r'-DEST/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
-    departure = f"{departure_match.group(1)} {departure_match.group(2)}" if departure_match else None
-    arrival = f"{arrival_match.group(1)} {arrival_match.group(2)}" if arrival_match else None
-    
-    # Return results as dictionary
-    return {
-        'Center': center_match,
-        'Registration Numbers': reg_numbers,
-        'Operators': ops,
-        'Flight Zones': zones_str,
-        'Departure Coordinates': departure,
-        'Arrival Coordinates': arrival
-    }
+    # DATA_ROW[COL_REGION] = reg
+    # DATA_ROW[COL_DATE] = row.name
+    # DATA_ROW[COL_FLIGHT] = row[COL_FLIGHT]
+    # DATA_ROW[COL_BOARD] = row[COL_BOARD]
+    # DATA_ROW[COL_TYPE] = row[COL_TYPE]
+    # DATA_ROW[COL_DEP] = row[COL_DEP]
+    # DATA_ROW[COL_ARR] = row[COL_ARR]
+    # DATA_ROW[COL_APB] = row[COL_APB]
+    # DATA_ROW[COL_AB] = row[COL_AB]
+    # DATA_ROW[COL_ARP] = row[COL_ARP]
+    # DATA_ROW[COL_AP] = row[COL_AP]
+    # DATA_ROW[COL_ROUTE] = row[COL_ROUTE]
+    # DATA_ROW[COL_FIELD18] = row[COL_FIELD18]
 
-def parser_2024_msk(row):
-    logger.info("Москва")
-    return {
-        'Center': "TBD"
-    }
+    # return DATA_ROW
+    # center_match = row['Центр ЕС ОрВД']
+
+    # # Extract Registration Numbers
+    # reg_numbers_match = re.findall(r'REG/[^\s]+', row['SHR'])
+    # reg_numbers = ';'.join([num.split('/')[1].strip() for num in reg_numbers_match])
+    
+    # # Extract Operator Names & Phone Numbers
+    # op_names_and_phones = re.findall(r'\+?\d{1,}\s?[-\s]?\w+\s\w+', row['SHR'])
+    # ops = '; '.join(op_names_and_phones)
+    
+    # # Extract Flight Zone Coordinates
+    # zone_coord_pattern = r'/ZONA\s(?:[A-Za-z0-9]+|[A-Za-z]+\s\d+)\/'
+    # zones = re.findall(zone_coord_pattern, row['SHR'])
+    # zones_str = '; '.join(zones)
+    
+    # # Extract Departure and Arrival Coordinates
+    # departure_match = re.search(r'-DEP/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
+    # arrival_match = re.search(r'-DEST/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
+    # departure = f"{departure_match.group(1)} {departure_match.group(2)}" if departure_match else None
+    # arrival = f"{arrival_match.group(1)} {arrival_match.group(2)}" if arrival_match else None
+    
+    # # Return results as dictionary
+    # return {
+    #     'Center': center_match,
+    #     'Registration Numbers': reg_numbers,
+    #     'Operators': ops,
+    #     'Flight Zones': zones_str,
+    #     'Departure Coordinates': departure,
+    #     'Arrival Coordinates': arrival
+    # }
+

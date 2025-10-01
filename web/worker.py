@@ -48,9 +48,11 @@ def create_task(path):
         parser, skiprows = get_parser(sheet_name, df)
 
         df = pd.read_excel(xls, sheet_name, skiprows=skiprows)
-
+        print(df)
         if parser is not None:
+            # extracted_columns = df.apply(parser, axis=1, result_type="expand")
             extracted_columns = df.apply(parser, axis=1, result_type="expand")
+            print(extracted_columns)
             extracted_columns.to_csv(output_path, index=False, encoding='utf-8-sig')
         else:
             logger.info("Parser not found")
