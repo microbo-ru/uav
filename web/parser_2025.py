@@ -1,6 +1,8 @@
 import re
 from typing import Any
 import random
+import datetime
+
 # https://github.com/contrailcirrus/pycontrails/blob/main/pycontrails/core/flightplan.py
 from parser_common import DATA_ROW, \
 COL_REGION, \
@@ -199,26 +201,47 @@ def parse_atc_plan(atc_plan: str) -> dict[str, str]:
 
 
 def parser_2025(row):
-    # logger.info(row)
+    logger.info(row)
+
     res = DATA_ROW.copy()
     res[COL_REGION] = row['Центр ЕС ОрВД']
-    return res
-    
-    # DATA_ROW[COL_REGION] = reg
-    # DATA_ROW[COL_DATE] = row.name
-    # DATA_ROW[COL_FLIGHT] = row[COL_FLIGHT]
-    # DATA_ROW[COL_BOARD] = row[COL_BOARD]
-    # DATA_ROW[COL_TYPE] = row[COL_TYPE]
-    # DATA_ROW[COL_DEP] = row[COL_DEP]
-    # DATA_ROW[COL_ARR] = row[COL_ARR]
-    # DATA_ROW[COL_APB] = row[COL_APB]
-    # DATA_ROW[COL_AB] = row[COL_AB]
-    # DATA_ROW[COL_ARP] = row[COL_ARP]
-    # DATA_ROW[COL_AP] = row[COL_AP]
-    # DATA_ROW[COL_ROUTE] = row[COL_ROUTE]
-    # DATA_ROW[COL_FIELD18] = row[COL_FIELD18]
 
-    # return DATA_ROW
+    # res[COL_FLIGHT] = row[COL_FLIGHT]
+    # res[COL_BOARD] = row[COL_BOARD]
+    # res[COL_TYPE] = row[COL_TYPE]
+    # res[COL_DEP] = row[COL_DEP]
+    # res[COL_ARR] = row[COL_ARR]
+    # res[COL_APB] = row[COL_APB]
+    # res[COL_AB] = row[COL_AB]
+    # res[COL_ARP] = row[COL_ARP]
+    # res[COL_AP] = row[COL_AP]
+    # res[COL_ROUTE] = row[COL_ROUTE]
+    # res[COL_FIELD18] = row[COL_FIELD18]
+
+    data = row['SHR']
+    patterns = {
+        COL_FLIGHT: r'SHR-(.*)',
+        # 'Departure Time': r'-ZZZZ(\d{4})',
+        # 'Speed & Altitude': r'-K(\d+)M(\d+)',
+        # 'Coordinates': r'DEP/(\d+N\d+E)',
+        COL_DATE: r'DOF/(\d{6})',
+        # 'Operator Name': r'OPR/(.*?) ',
+        # 'Phone Number': r'\+(.*?)\s',
+        COL_TYPE: r'TYP/(.*?) ',
+        # 'Remarks': r'RMK/(.*?) ',
+        # 'SID Code': r'SID/(.*)'
+    }
+
+    format_string = "%y%m%d" 
+    for key, pattern in patterns.items():
+        match = re.search(pattern, data)
+        if match:
+            res[key] = match.group(1)
+        
+    res[COL_DATE] = datetime.datetime.strptime(res[COL_DATE], format_string)
+   
+    return res
+
     # center_match = row['Центр ЕС ОрВД']
 
     # # Extract Registration Numbers

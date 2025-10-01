@@ -17,9 +17,13 @@ services:
 
   charts:
     build: ./charts
+    env_file: .env
     ports:
       - 8501:8501
-    command: streamlit run main.py
+    # command: streamlit run main.py
+    command: >
+      bash -c "nohup gpt2giga --pass-model & 
+      streamlit run main.py --server.port=8501"
     volumes:
       - ./charts:/usr/src/app
 
