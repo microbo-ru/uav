@@ -20,7 +20,7 @@ celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://lo
 logger = logging.getLogger('celery.task')
 
 def get_parser(sheet_name, df_head):
-    logger.info(df_head)
+    # logger.info(df_head)
 
     head_as_string = df_head.to_string()
     if sheet_name in ["Москва", ""]:
@@ -43,7 +43,7 @@ def create_task(path):
         safe_sheet_name = sheet_name.replace(" ", "_")
         output_path = str(input_path.with_suffix(".csv"))
         output_path = output_path[:-4] + f"_{safe_sheet_name}" + output_path[-4:]
-        print(output_path)
+        # print(output_path)
         df = pd.read_excel(xls, sheet_name)
         parser = get_parser(sheet_name, df.head(3))
         if parser is not None:

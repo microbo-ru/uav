@@ -22,7 +22,7 @@ def main():
     # excel_file_path = '../data/2025 - Copy.xlsx'
     excel_file_path = '../data/2024 - Copy.xlsx'
     res = create_task(excel_file_path)
-    print(res)
+    # print(res)
 
 if __name__ == "__main__":
     main()
