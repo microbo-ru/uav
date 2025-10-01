@@ -19,7 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def parser_2024_spb(row):
-    logger.info(row)
+    # logger.info(row)
     DATA_ROW[COL_REGION] = "Санкт-Петербург"
     DATA_ROW[COL_DATE] = row[COL_DATE]
     DATA_ROW[COL_FLIGHT] = row[COL_FLIGHT]
