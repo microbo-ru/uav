@@ -37,20 +37,20 @@ def create_task(path):
     logger.info("Executing create_task with id: %s and path %s", create_task.request.id, path)
 
     input_path = Path(path)
-    output_path = input_path.with_suffix(".csv")
     xls = pd.ExcelFile(path)
 
-    all_dataframes = []
     for sheet_name in xls.sheet_names[:2]:
+        safe_sheet_name = sheet_name.replace(" ", "_")
+        output_path = str(input_path.with_suffix(".csv"))
+        output_path = output_path[:-4] + f"_{safe_sheet_name}" + output_path[-4:]
+        print(output_path)
         df = pd.read_excel(xls, sheet_name)
         parser = get_parser(sheet_name, df.head(3))
         if parser is not None:
             extracted_columns = df.apply(parser, axis=1, result_type="expand")
-            all_dataframes.append(extracted_columns)
+            extracted_columns.to_csv(output_path, index=False, encoding='utf-8-sig')
         else:
             logger.info("Parser not found")
-    final_df = pd.concat(all_dataframes)
-    final_df.to_csv(str(output_path), index=False, encoding='utf-8-sig')
 
     return True
 
