@@ -16,8 +16,7 @@ COL_APB, \
 COL_AB, \
 COL_ARP, \
 COL_AP, \
-COL_ROUTE, \
-COL_FIELD18
+COL_ROUTE
 
 import logging
 logger = logging.getLogger(__name__)
@@ -199,6 +198,19 @@ def parse_atc_plan(atc_plan: str) -> dict[str, str]:
 
     return flightplan
 
+def group_and_log(res, col, value, row_name):
+    if value:
+        res[col] = value.group(1)
+    else:
+        res[col] = None
+        logger.warning(f"{col} not found in the row: {row_name}")
+
+def set_and_log(res, col, value, row_name):
+    if value:
+        res[col] = value.removeprefix('-')
+    else:
+        res[col] = None
+        logger.warning(f"{col} not found in the row: {row_name}")
 
 def parser_2025(row):
     # logger.info(row)
@@ -209,41 +221,23 @@ def parser_2025(row):
     shr = row['SHR']
     shr_list = shr.split('\n')
 
-    # dof = next((t for t in shr_list if "DOF/" in t), None) 
-    # if dof:
-    #     res[COL_DATE] = dof[dof.index('DOF/') + 4: dof.index('DOF/') + 6 + 4]
-    # else:
-    #     res[COL_DATE] = None
-    #     logger.warning(f"DOF not found in the row: {row.name}")
-
     dof = re.search(r'DOF/(\d{6})', shr)
-    res[COL_DATE] = dof.group(1)
+    group_and_log(res, COL_DATE, dof, row.name)
 
     flight_id = re.search(r'SHR-([^\n]+)', shr)
-    if flight_id:
-        res[COL_FLIGHT] = flight_id.group(1)
-    else:
-        res[COL_FLIGHT] = None
-        logger.warning(f"Flight not found in the row: {row.name}")
+    group_and_log(res, COL_FLIGHT, flight_id, row.name)
 
     board = re.search(r'REG/([^\s]+)', shr)
-    if board:
-        res[COL_BOARD] = board.group(1)
-    else:
-        res[COL_BOARD] = None
-        logger.warning(f"Board not found in the row: {row.name}")
+    group_and_log(res, COL_BOARD, board, row.name)
+
+    flight_type = re.search(r'TYP/([^\s]+)', shr)
+    group_and_log(res, COL_TYPE, flight_type, row.name)
 
     route = next((t for t in shr_list if "/ZONA" in t), None) 
-    if route:
-        res[COL_ROUTE] = route.removeprefix('-')
-    else:
-        res[COL_ROUTE] = None
-        logger.warning(f"Route not found in the row: {row.name}")
+    set_and_log(res, COL_ROUTE, route, row.name)
 
     return res
-    # 
-    # res[COL_BOARD] = row[COL_BOARD]
-    # res[COL_TYPE] = row[COL_TYPE]
+
     # res[COL_DEP] = row[COL_DEP]
     # res[COL_ARR] = row[COL_ARR]
     # res[COL_APB] = row[COL_APB]
@@ -251,7 +245,7 @@ def parser_2025(row):
     # res[COL_ARP] = row[COL_ARP]
     # res[COL_AP] = row[COL_AP]
    
-    # res[COL_FIELD18] = row[COL_FIELD18]
+    
 
     # data = row['SHR']
     # patterns = {

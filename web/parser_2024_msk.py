@@ -12,8 +12,8 @@ COL_APB, \
 COL_AB, \
 COL_ARP, \
 COL_AP, \
-COL_ROUTE, \
-COL_FIELD18
+COL_ROUTE
+# COL_FIELD18
 
 import logging
 logger = logging.getLogger(__name__)
@@ -33,6 +33,5 @@ def parser_2024_msk(row):
     # DATA_ROW[COL_ARP] = row[COL_ARP]
     # DATA_ROW[COL_AP] = row[COL_AP]
     # DATA_ROW[COL_ROUTE] = row[COL_ROUTE]
-    # DATA_ROW[COL_FIELD18] = row[COL_FIELD18]
 
     return res

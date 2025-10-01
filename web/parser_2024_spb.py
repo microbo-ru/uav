@@ -12,13 +12,10 @@ COL_APB, \
 COL_AB, \
 COL_ARP, \
 COL_AP, \
-COL_ROUTE, \
-COL_FIELD18
+COL_ROUTE
 
 import logging
 logger = logging.getLogger(__name__)
-
-
 
 def parser_2024_spb(row):
     # logger.info(row)
@@ -35,10 +32,5 @@ def parser_2024_spb(row):
     res[COL_ARP] = row[COL_ARP]
     res[COL_AP] = row[COL_AP]
     res[COL_ROUTE] = row[COL_ROUTE]
-    res[COL_FIELD18] = row[COL_FIELD18]
 
-    #post processing
-    
-    # res[COL_DATE] = try_parse_datetime(str(res[COL_DATE]))
-    
     return res

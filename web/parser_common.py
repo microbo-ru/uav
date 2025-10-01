@@ -14,7 +14,7 @@ COL_AB = "А/В"
 COL_ARP="АРП"
 COL_AP = "А/П"
 COL_ROUTE="Маршрут"
-COL_FIELD18="Поле 18"
+# COL_FIELD18="Поле 18"
 
 DATA_ROW = {
     COL_REGION: "undefined", 
@@ -29,7 +29,8 @@ DATA_ROW = {
     COL_ARP: "undefined",
     COL_AP: "undefined",
     COL_ROUTE: "undefined",
-    COL_FIELD18: "undefined"
+    "name": "undefined"
+    # COL_FIELD18: "undefined"
 }
 
 def try_parse_datetime(date_string):
