@@ -1,5 +1,6 @@
 import re
-from typing import Any
+# from typing import Any
+from datetime import datetime
 from parser_common import DATA_ROW, \
 COL_REGION, \
 COL_DATE, \
@@ -18,6 +19,14 @@ COL_FIELD18
 import logging
 logger = logging.getLogger(__name__)
 
+# def try_parse_datetime(date_string):
+#     date_format = "%y%m%d" 
+#     try:
+#         parsed_datetime = datetime.strptime(date_string, date_format)
+#         return parsed_datetime
+#     except ValueError:
+#         return "Error"
+
 def parser_2024_spb(row):
     # logger.info(row)
     res = DATA_ROW.copy()
@@ -34,5 +43,9 @@ def parser_2024_spb(row):
     res[COL_AP] = row[COL_AP]
     res[COL_ROUTE] = row[COL_ROUTE]
     res[COL_FIELD18] = row[COL_FIELD18]
+
+    #post processing
+    
+    # res[COL_DATE] = try_parse_datetime(str(res[COL_DATE]))
     
     return res

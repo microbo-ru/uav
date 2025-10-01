@@ -26,6 +26,7 @@ services:
       streamlit run main.py --server.port=8501"
     volumes:
       - ./charts:/usr/src/app
+      - ./tmp:/usr/src/app/tmp
 
   app-a:
     build: ./web
