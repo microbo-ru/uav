@@ -201,12 +201,47 @@ def parse_atc_plan(atc_plan: str) -> dict[str, str]:
 
 
 def parser_2025(row):
-    logger.info(row)
+    # logger.info(row)
 
     res = DATA_ROW.copy()
     res[COL_REGION] = row['Центр ЕС ОрВД']
 
-    # res[COL_FLIGHT] = row[COL_FLIGHT]
+    shr = row['SHR']
+    shr_list = shr.split('\n')
+
+    # dof = next((t for t in shr_list if "DOF/" in t), None) 
+    # if dof:
+    #     res[COL_DATE] = dof[dof.index('DOF/') + 4: dof.index('DOF/') + 6 + 4]
+    # else:
+    #     res[COL_DATE] = None
+    #     logger.warning(f"DOF not found in the row: {row.name}")
+
+    dof = re.search(r'DOF/(\d{6})', shr)
+    res[COL_DATE] = dof.group(1)
+
+    flight_id = re.search(r'SHR-([^\n]+)', shr)
+    if flight_id:
+        res[COL_FLIGHT] = flight_id.group(1)
+    else:
+        res[COL_FLIGHT] = None
+        logger.warning(f"Flight not found in the row: {row.name}")
+
+    board = re.search(r'REG/([^\s]+)', shr)
+    if board:
+        res[COL_BOARD] = board.group(1)
+    else:
+        res[COL_BOARD] = None
+        logger.warning(f"Board not found in the row: {row.name}")
+
+    route = next((t for t in shr_list if "/ZONA" in t), None) 
+    if route:
+        res[COL_ROUTE] = route.removeprefix('-')
+    else:
+        res[COL_ROUTE] = None
+        logger.warning(f"Route not found in the row: {row.name}")
+
+    return res
+    # 
     # res[COL_BOARD] = row[COL_BOARD]
     # res[COL_TYPE] = row[COL_TYPE]
     # res[COL_DEP] = row[COL_DEP]
@@ -215,32 +250,32 @@ def parser_2025(row):
     # res[COL_AB] = row[COL_AB]
     # res[COL_ARP] = row[COL_ARP]
     # res[COL_AP] = row[COL_AP]
-    # res[COL_ROUTE] = row[COL_ROUTE]
+   
     # res[COL_FIELD18] = row[COL_FIELD18]
 
-    data = row['SHR']
-    patterns = {
-        COL_FLIGHT: r'SHR-(.*)',
-        # 'Departure Time': r'-ZZZZ(\d{4})',
-        # 'Speed & Altitude': r'-K(\d+)M(\d+)',
-        # 'Coordinates': r'DEP/(\d+N\d+E)',
-        COL_DATE: r'DOF/(\d{6})',
-        # 'Operator Name': r'OPR/(.*?) ',
-        # 'Phone Number': r'\+(.*?)\s',
-        COL_TYPE: r'TYP/(.*?) ',
-        # 'Remarks': r'RMK/(.*?) ',
-        # 'SID Code': r'SID/(.*)'
-    }
+    # data = row['SHR']
+    # patterns = {
+    #     COL_FLIGHT: r'SHR-(.*)',
+    #     # 'Departure Time': r'-ZZZZ(\d{4})',
+    #     # 'Speed & Altitude': r'-K(\d+)M(\d+)',
+    #     # 'Coordinates': r'DEP/(\d+N\d+E)',
+    #     COL_DATE: r'DOF/(\d{6})',
+    #     # 'Operator Name': r'OPR/(.*?) ',
+    #     # 'Phone Number': r'\+(.*?)\s',
+    #     COL_TYPE: r'TYP/(.*?) ',
+    #     # 'Remarks': r'RMK/(.*?) ',
+    #     # 'SID Code': r'SID/(.*)'
+    # }
 
-    format_string = "%y%m%d" 
-    for key, pattern in patterns.items():
-        match = re.search(pattern, data)
-        if match:
-            res[key] = match.group(1)
+    # format_string = "%y%m%d" 
+    # for key, pattern in patterns.items():
+    #     match = re.search(pattern, data)
+    #     if match:
+    #         res[key] = match.group(1)
         
-    res[COL_DATE] = datetime.datetime.strptime(res[COL_DATE], format_string)
+    # res[COL_DATE] = datetime.datetime.strptime(res[COL_DATE], format_string)
    
-    return res
+    # return res
 
     # center_match = row['Центр ЕС ОрВД']
 

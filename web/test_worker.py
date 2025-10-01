@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     excel_file_path = '../data/2025 - Copy.xlsx'
-    # excel_file_path = '../data/2024 - Copy.xlsx'
+    # excel_file_path = '../tmp/2024.xlsx'
     # excel_file_path = '../data/2024.xlsx'
     res = create_task(excel_file_path)
     # print(res)

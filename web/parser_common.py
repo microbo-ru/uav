@@ -1,3 +1,7 @@
+from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
+
 COL_REGION = "Регион"
 COL_DATE = "Дата"
 COL_FLIGHT = "Рейс"
@@ -27,3 +31,12 @@ DATA_ROW = {
     COL_ROUTE: "undefined",
     COL_FIELD18: "undefined"
 }
+
+def try_parse_datetime(date_string):
+    date_format = "%Y-%m-%d %H:%M:%S" 
+    try:
+        parsed_datetime = datetime.strptime(date_string, date_format)
+        return parsed_datetime
+    except ValueError:
+        logger.error(f"Failed to parse date: {date_string}")
+        return None
