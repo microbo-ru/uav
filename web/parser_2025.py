@@ -233,72 +233,29 @@ def parser_2025(row):
     flight_type = re.search(r'TYP/([^\s]+)', shr)
     group_and_log(res, COL_TYPE, flight_type, row.name)
 
-    route = next((t for t in shr_list if "/ZONA" in t), None) 
-    set_and_log(res, COL_ROUTE, route, row.name)
+    shr_cut = [(idx, t) for idx, t in enumerate(shr_list) if len(t) == 9 and t.startswith("-")]
+    # print(shr_cut, shr_cut[0][1]) [(1, '-ZZZZ0705')] -ZZZZ0705
+    if len(shr_cut) == 2:
+        set_and_log(res, COL_AB, shr_cut[0][1][:5], row.name)
+        set_and_log(res, COL_DEP, shr_cut[0][1][5:], row.name)
+        set_and_log(res, COL_AP, shr_cut[1][1][:5], row.name)
+        set_and_log(res, COL_ARR, shr_cut[1][1][5:], row.name)
+        route_idx = shr_cut[0][0] + 1
+        route = shr_list[route_idx]
+        set_and_log(res, COL_ROUTE, route, row.name)
+    elif len(shr_cut) == 1:
+        set_and_log(res, COL_AB, shr_cut[0][1][:5], row.name)
+        set_and_log(res, COL_DEP, shr_cut[0][1][5:], row.name)
+        route_idx = shr_cut[0][0] + 1
+        route = shr_list[route_idx]
+        set_and_log(res, COL_ROUTE, route, row.name)
+    else:
+        logger.warning(f"{COL_DEP} and {COL_ARR} not found in the row: {row.name}")
+
+    dep_coordinates_match = re.search(r'DEP/(\d\w\d+\w\d+\w)', shr)
+    group_and_log(res, COL_APB, dep_coordinates_match, row.name)
+
+    dest_coordinates_match = re.search(r'DEST/(\d\w\d+\w\d+\w)', shr)
+    group_and_log(res, COL_ARP, dest_coordinates_match, row.name)
 
     return res
-
-    # res[COL_DEP] = row[COL_DEP]
-    # res[COL_ARR] = row[COL_ARR]
-    # res[COL_APB] = row[COL_APB]
-    # res[COL_AB] = row[COL_AB]
-    # res[COL_ARP] = row[COL_ARP]
-    # res[COL_AP] = row[COL_AP]
-   
-    
-
-    # data = row['SHR']
-    # patterns = {
-    #     COL_FLIGHT: r'SHR-(.*)',
-    #     # 'Departure Time': r'-ZZZZ(\d{4})',
-    #     # 'Speed & Altitude': r'-K(\d+)M(\d+)',
-    #     # 'Coordinates': r'DEP/(\d+N\d+E)',
-    #     COL_DATE: r'DOF/(\d{6})',
-    #     # 'Operator Name': r'OPR/(.*?) ',
-    #     # 'Phone Number': r'\+(.*?)\s',
-    #     COL_TYPE: r'TYP/(.*?) ',
-    #     # 'Remarks': r'RMK/(.*?) ',
-    #     # 'SID Code': r'SID/(.*)'
-    # }
-
-    # format_string = "%y%m%d" 
-    # for key, pattern in patterns.items():
-    #     match = re.search(pattern, data)
-    #     if match:
-    #         res[key] = match.group(1)
-        
-    # res[COL_DATE] = datetime.datetime.strptime(res[COL_DATE], format_string)
-   
-    # return res
-
-    # center_match = row['Центр ЕС ОрВД']
-
-    # # Extract Registration Numbers
-    # reg_numbers_match = re.findall(r'REG/[^\s]+', row['SHR'])
-    # reg_numbers = ';'.join([num.split('/')[1].strip() for num in reg_numbers_match])
-    
-    # # Extract Operator Names & Phone Numbers
-    # op_names_and_phones = re.findall(r'\+?\d{1,}\s?[-\s]?\w+\s\w+', row['SHR'])
-    # ops = '; '.join(op_names_and_phones)
-    
-    # # Extract Flight Zone Coordinates
-    # zone_coord_pattern = r'/ZONA\s(?:[A-Za-z0-9]+|[A-Za-z]+\s\d+)\/'
-    # zones = re.findall(zone_coord_pattern, row['SHR'])
-    # zones_str = '; '.join(zones)
-    
-    # # Extract Departure and Arrival Coordinates
-    # departure_match = re.search(r'-DEP/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
-    # arrival_match = re.search(r'-DEST/(\d+[\d\.NS]+)[^ ]* (\d+[\d\.WE]+)', row['SHR'])
-    # departure = f"{departure_match.group(1)} {departure_match.group(2)}" if departure_match else None
-    # arrival = f"{arrival_match.group(1)} {arrival_match.group(2)}" if arrival_match else None
-    
-    # # Return results as dictionary
-    # return {
-    #     'Center': center_match,
-    #     'Registration Numbers': reg_numbers,
-    #     'Operators': ops,
-    #     'Flight Zones': zones_str,
-    #     'Departure Coordinates': departure,
-    #     'Arrival Coordinates': arrival
-    # }
-

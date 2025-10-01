@@ -28,8 +28,7 @@ DATA_ROW = {
     COL_AB: "undefined",
     COL_ARP: "undefined",
     COL_AP: "undefined",
-    COL_ROUTE: "undefined",
-    "name": "undefined"
+    COL_ROUTE: "undefined"
     # COL_FIELD18: "undefined"
 }
 
