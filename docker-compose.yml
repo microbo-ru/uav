@@ -20,7 +20,6 @@ services:
     env_file: .env
     ports:
       - 8501:8501
-    # command: streamlit run main.py
     command: >
       bash -c "nohup gpt2giga --pass-model & 
       streamlit run main.py --server.port=8501"
@@ -32,7 +31,6 @@ services:
     build: ./web
     ports:
       - 8000:8000
-    # command: uvicorn main:app --host 0.0.0.0 --reload
     command: python main.py
     volumes:
       - ./web:/usr/src/app
@@ -64,12 +62,10 @@ services:
 
   flower:
     image: mher/flower
-    # command: celery --broker=redis://redis:6379/0 flower --port=5555
     ports:
       - 5555:5555
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
-      # - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - app-a
       - redis
