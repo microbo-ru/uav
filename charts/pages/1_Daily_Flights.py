@@ -2,7 +2,7 @@ import streamlit as st
 import plost
 import pandas as pd
 
-st.subheader('Daily Flights Stats')
+st.subheader('Интенсивность полетов по месяцам и дням недели (Санкт-Петербург)')
 st.write(
     """
     **Дневная интенсивность** полетов отображает кол-во записе в табеле в разерезе месяцев и дней недели.

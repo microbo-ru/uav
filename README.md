@@ -1,12 +1,21 @@
 # uav
 Сервис для анализа количества и длительности полетов гражданских беспилотников в регионах Российской Федерации для определения полетной активности на основе данных Росавиации
 
-# Run locally (for AI feature you need to have gigachat keys in .env)
+# Run locally
 ```
 docker compose up -d
 ```
 
-# live view (HTTP only for now):
+# Live view (use HTTP only!):
 
 http://microbo.ru:8501/
+
 http://microbo.ru:8000/docs
+
+Пример 1
+
+![Пример 1][/docs/spb.png]
+
+Пример 2
+
+![Пример 1][/docs/spb_ai.png]
