@@ -12,8 +12,8 @@ COL_APB, \
 COL_AB, \
 COL_ARP, \
 COL_AP, \
-COL_ROUTE
-# COL_FIELD18
+COL_ROUTE, \
+SHEET_NAME_MSK_2024
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 def parser_2024_msk(row):
     # logger.info(row)
     res = DATA_ROW.copy()
-    res[COL_REGION] = "Москва"
+    res[COL_REGION] = SHEET_NAME_MSK_2024
     res[COL_DATE] = row["Дата полёта"]
     # DATA_ROW[COL_FLIGHT] = row[COL_FLIGHT]
     # DATA_ROW[COL_BOARD] = row[COL_BOARD]

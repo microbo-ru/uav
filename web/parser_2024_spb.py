@@ -12,7 +12,8 @@ COL_APB, \
 COL_AB, \
 COL_ARP, \
 COL_AP, \
-COL_ROUTE
+COL_ROUTE,\
+SHEET_NAME_SPB_2024
 
 import logging
 logger = logging.getLogger(__name__)
@@ -20,8 +21,8 @@ logger = logging.getLogger(__name__)
 def parser_2024_spb(row):
     # logger.info(row)
     res = DATA_ROW.copy()
-    res[COL_REGION] = "Санкт-Петербург"
-    res[COL_DATE] = try_parse_datetime(str(row[COL_DATE]))
+    res[COL_REGION] = SHEET_NAME_SPB_2024
+    res[COL_DATE] = try_parse_datetime(str(row[COL_DATE]), row.name, SHEET_NAME_SPB_2024)
     res[COL_FLIGHT] = row[COL_FLIGHT]
     res[COL_BOARD] = row[COL_BOARD]
     res[COL_TYPE] = row[COL_TYPE]
