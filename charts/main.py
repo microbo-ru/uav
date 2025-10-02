@@ -63,25 +63,25 @@ if xlsx_file is not None:
 
                 df = pd.read_csv(csv_file_path)
 
-                tab1, tab2 = st.tabs(["По дням", "По дням недели"])
+                st.line_chart(df, y='Регион')
+                # tab1, tab2 = st.tabs(["По дням", "По дням недели"])
+                # tab1 = st.tabs(["По регионам"])
 
-                with tab1:
-                    plost.time_hist(
-                        data=df,
-                        date='Дата',
-                        x_unit='date',
-                        y_unit='month',
-                        aggregate='count',
-                    )
+                # with tab1:
+                #     plost.hist(
+                #         data=df,
+                #         date='Регион',
+                #         aggregate='count',
+                #     )
 
-                with tab2:
-                    plost.time_hist(
-                        data=df,
-                        date='Дата',
-                        x_unit='days',
-                        y_unit='month',
-                        aggregate='count',
-                    )
+                # with tab2:
+                #     plost.time_hist(
+                #         data=df,
+                #         date='Дата',
+                #         x_unit='days',
+                #         y_unit='month',
+                #         aggregate='count',
+                #     )
 
             except requests.exceptions.RequestException as e:
                 st.error(f"Error fetching data: {e}")
