@@ -23,16 +23,16 @@ def parser_2024_ekb(row):
     
     res = DATA_ROW.copy()
     res[COL_REGION] = SHEET_NAME_EKB_2024
-    res[COL_DATE] = row["Дата, время вылета факт."]
+    # res[COL_DATE] = row["Дата, время вылета факт."]
     # res[COL_FLIGHT] = row[COL_FLIGHT]
     # res[COL_BOARD] = row[COL_BOARD]
     # res[COL_TYPE] = row[COL_TYPE]
-    # res[COL_DEP] = row[COL_DEP]
-    # res[COL_ARR] = row[COL_ARR]
-    # res[COL_APB] = row[COL_APB]
+    res[COL_DEP] = row["Дата, время вылета факт."]
+    res[COL_ARR] = row["Дата, время посадки факт."]
+    res[COL_APB] = row["Место вылета"]
     # res[COL_AB] = row[COL_AB]
-    # res[COL_ARP] = row[COL_ARP]
+    res[COL_ARP] = row["Место посадки"]
     # res[COL_AP] = row[COL_AP]
-    # res[COL_ROUTE] = row[COL_ROUTE]
+    res[COL_ROUTE] = row["Район полетов (зона, маршрут)"]
 
     return res

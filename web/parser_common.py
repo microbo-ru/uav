@@ -70,6 +70,7 @@ def set_and_log(res, col, value, row_name, sheet_name):
         logger.warning(f"{col} not found in the row: {row_name}, sheet_name: {sheet_name}")
 
 def set_from_shr(res, shr, row_name, sheet_name):
+    shr = shr.replace("_x000D_", "") # fixup for Magadan 2024
     shr_list = shr.split('\n')
 
     dof = re.search(r'DOF/(\d{6})', shr)
@@ -86,8 +87,10 @@ def set_from_shr(res, shr, row_name, sheet_name):
 
     zzzzdddd = r"^-(?=(?:.*[a-zA-Z]){4})(?=(?:.*\d){4})[a-zA-Z\d]{8}$"
     # shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if len(t.strip()) == 9 and t.startswith("-")]
-    shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if bool(re.match(zzzzdddd, t)) and t.startswith("-")]
+    shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if bool(re.match(zzzzdddd, t.strip())) and t.startswith("-")]
     # logger.info(shr_cut)
+    # logger.info(shr_list)
+    # exit()
     # print(shr_cut, shr_cut[0][1]) [(1, '-ZZZZ0705')] -ZZZZ0705
     if len(shr_cut) == 2:
         set_and_log(res, COL_AB, shr_cut[0][1][:5], row_name, sheet_name)
@@ -116,4 +119,27 @@ def set_from_shr(res, shr, row_name, sheet_name):
     group_and_log(res, COL_APB, dep_coordinates_match, row_name, sheet_name)
 
     dest_coordinates_match = re.search(r'DEST/(\d\w\d+\w\d+\w)', shr)
+    group_and_log(res, COL_ARP, dest_coordinates_match, row_name, sheet_name)
+
+def set_from_pln(res, pln, row_name, sheet_name):
+    if (pln == "nan"):
+        return 
+    
+    pln_list = pln.split('-')
+
+    dof = re.search(r'DOF/(\d{6})', pln)
+    group_and_log(res, COL_DATE, dof, row_name, sheet_name)
+
+    if (len(pln_list) > 0):
+        flight_id = pln_list[1]
+        set_and_log(res, COL_FLIGHT, flight_id, row_name, sheet_name)
+
+    if (len(pln_list) > 1):
+        board = pln_list[2]
+        set_and_log(res, COL_BOARD, board, row_name, sheet_name)
+
+    dep_coordinates_match = re.search(r'DEP/(\d\w\d+\w\d+\w)', pln)
+    group_and_log(res, COL_APB, dep_coordinates_match, row_name, sheet_name)
+
+    dest_coordinates_match = re.search(r'DEST/(\d\w\d+\w\d+\w)', pln)
     group_and_log(res, COL_ARP, dest_coordinates_match, row_name, sheet_name)

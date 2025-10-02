@@ -41,34 +41,34 @@ def get_parser(sheet_name, df_head):
     # logger.info(df_head)
     head_as_string = df_head.to_string()
 
-    # if sheet_name in [SHEET_NAME_MSK_2024]:
-    #     return lambda t: parser_2024_msk(t), 1
-    # if sheet_name in [SHEET_NAME_SPB_2024]:
-    #     return lambda t: parser_2024_spb(t), 0
-    # if sheet_name in [SHEET_NAME_KL_2024]:
-    #     return lambda t: parser_2024_kl(t), 0
+    if sheet_name in [SHEET_NAME_MSK_2024]:
+        return lambda t: parser_2024_msk(t), 1
+    if sheet_name in [SHEET_NAME_SPB_2024]:
+        return lambda t: parser_2024_spb(t), 0
+    if sheet_name in [SHEET_NAME_KL_2024]:
+        return lambda t: parser_2024_kl(t), 0
     if sheet_name in [SHEET_NAME_ROS_2024]:
         return lambda t: parser_2024_ros(t), 1 # rows to skip
-    # if sheet_name in [SHEET_NAME_SAM_2024]:
-    #     return lambda t: parser_2024_sam(t), 0
-    # if sheet_name in [SHEET_NAME_EKB_2024]:
-    #     return lambda t: parser_2024_ekb(t), 0
-    # if sheet_name in [SHEET_NAME_TU_2024]:
-    #     return lambda t: parser_2024_tu(t), 0
-    # if sheet_name in [SHEET_NAME_NOV_2024]:
-    #     return lambda t: parser_2024_nov(t), 0
-    # if sheet_name in [SHEET_NAME_KR_2024]:
-    #     return lambda t: parser_2024_kr(t), 0
-    # if sheet_name in [SHEET_NAME_IR_2024]:
-    #     return lambda t: parser_2024_ir(t), 0
-    # if sheet_name in [SHEET_NAME_JA_2024]:
-    #     return lambda t: parser_2024_ja(t), 0
-    # if sheet_name in [SHEET_NAME_MA_2024]:
-    #     return lambda t: parser_2024_ma(t), 2
-    # if sheet_name in [SHEET_NAME_HA_2024]:
-    #     return lambda t: parser_2024_ha(t), 1
-    # if sheet_name in [SHEET_NAME_SF_2024]:
-    #     return lambda t: parser_2024_sf(t), 1
+    if sheet_name in [SHEET_NAME_SAM_2024]:
+        return lambda t: parser_2024_sam(t), 0
+    if sheet_name in [SHEET_NAME_EKB_2024]:
+        return lambda t: parser_2024_ekb(t), 0
+    if sheet_name in [SHEET_NAME_TU_2024]:
+        return lambda t: parser_2024_tu(t), 0
+    if sheet_name in [SHEET_NAME_NOV_2024]:
+        return lambda t: parser_2024_nov(t), 0
+    if sheet_name in [SHEET_NAME_KR_2024]:
+        return lambda t: parser_2024_kr(t), 0
+    if sheet_name in [SHEET_NAME_IR_2024]:
+        return lambda t: parser_2024_ir(t), 0
+    if sheet_name in [SHEET_NAME_JA_2024]:
+        return lambda t: parser_2024_ja(t), 0
+    if sheet_name in [SHEET_NAME_MA_2024]:
+        return lambda t: parser_2024_ma(t), 2
+    if sheet_name in [SHEET_NAME_HA_2024]:
+        return lambda t: parser_2024_ha(t), 1
+    if sheet_name in [SHEET_NAME_SF_2024]:
+        return lambda t: parser_2024_sf(t), 1
     elif "Центр ЕС ОрВД" in head_as_string:
         return lambda t: parser_2025(t), 0
     else:

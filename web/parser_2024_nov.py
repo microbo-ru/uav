@@ -24,14 +24,14 @@ def parser_2024_nov(row):
     res[COL_REGION] = SHEET_NAME_NOV_2024
     # res[COL_DATE] = try_parse_datetime(str(row[COL_DATE]))
     res[COL_FLIGHT] = row["Рейс"]
-    # res[COL_BOARD] = row[COL_BOARD]
-    # res[COL_TYPE] = row[COL_TYPE]
-    # res[COL_DEP] = row[COL_DEP]
-    # res[COL_ARR] = row[COL_ARR]
-    # res[COL_APB] = row[COL_APB]
+    res[COL_BOARD] = row["Борт. номер ВС."]
+    res[COL_TYPE] = row["Тип/ группа ВС"]
+    res[COL_DEP] = row["Время вылета факт."]
+    res[COL_ARR] = row["Время посадки факт."]
+    res[COL_APB] = row["АФТН АП вылета"]
     # res[COL_AB] = row[COL_AB]
-    # res[COL_ARP] = row[COL_ARP]
+    res[COL_ARP] = row["АФТН АП посадки"]
     # res[COL_AP] = row[COL_AP]
-    # res[COL_ROUTE] = row[COL_ROUTE]
+    res[COL_ROUTE] = row["Текст исходного маршрута"]
 
     return res
