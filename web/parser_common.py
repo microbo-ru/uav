@@ -33,18 +33,18 @@ COL_AP = "А/П"
 COL_ROUTE="Маршрут"
 
 DATA_ROW = {
-    COL_REGION: "undefined", 
-    COL_DATE: "undefined", 
-    COL_FLIGHT: "undefined", 
-    COL_BOARD: "undefined",
-    COL_TYPE: "undefined",
-    COL_DEP: "undefined", 
-    COL_ARR: "undefined", 
-    COL_APB: "undefined",
-    COL_AB: "undefined",
-    COL_ARP: "undefined",
-    COL_AP: "undefined",
-    COL_ROUTE: "undefined"
+    COL_REGION: "", 
+    COL_DATE: "", 
+    COL_FLIGHT: "", 
+    COL_BOARD: "",
+    COL_TYPE: "",
+    COL_DEP: "", 
+    COL_ARR: "", 
+    COL_APB: "",
+    COL_AB: "",
+    COL_ARP: "",
+    COL_AP: "",
+    COL_ROUTE: ""
 }
 
 def try_parse_datetime(date_string, row_name, sheet_name):
@@ -84,7 +84,10 @@ def set_from_shr(res, shr, row_name, sheet_name):
     flight_type = re.search(r'TYP/([^\s]+)', shr)
     group_and_log(res, COL_TYPE, flight_type, row_name, sheet_name)
 
-    shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if len(t.strip()) == 9 and t.startswith("-")]
+    zzzzdddd = r"^-(?=(?:.*[a-zA-Z]){4})(?=(?:.*\d){4})[a-zA-Z\d]{8}$"
+    # shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if len(t.strip()) == 9 and t.startswith("-")]
+    shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if bool(re.match(zzzzdddd, t)) and t.startswith("-")]
+    # logger.info(shr_cut)
     # print(shr_cut, shr_cut[0][1]) [(1, '-ZZZZ0705')] -ZZZZ0705
     if len(shr_cut) == 2:
         set_and_log(res, COL_AB, shr_cut[0][1][:5], row_name, sheet_name)
@@ -103,6 +106,10 @@ def set_from_shr(res, shr, row_name, sheet_name):
         route = shr_list[route_idx]
         set_and_log(res, COL_ROUTE, route, row_name, sheet_name)
     else:
+        set_and_log(res, COL_AB, None, row_name, sheet_name)
+        set_and_log(res, COL_DEP, None, row_name, sheet_name)
+        set_and_log(res, COL_AP, None, row_name, sheet_name)
+        set_and_log(res, COL_ARR, None, row_name, sheet_name)
         logger.warning(f"{COL_DEP} and {COL_ARR} not found in the row: {row_name}, sheet_name: {sheet_name}")
 
     dep_coordinates_match = re.search(r'DEP/(\d\w\d+\w\d+\w)', shr)

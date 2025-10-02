@@ -41,14 +41,14 @@ def get_parser(sheet_name, df_head):
     # logger.info(df_head)
     head_as_string = df_head.to_string()
 
-    if sheet_name in [SHEET_NAME_MSK_2024]:
-        return lambda t: parser_2024_msk(t), 1
+    # if sheet_name in [SHEET_NAME_MSK_2024]:
+    #     return lambda t: parser_2024_msk(t), 1
     # if sheet_name in [SHEET_NAME_SPB_2024]:
     #     return lambda t: parser_2024_spb(t), 0
     # if sheet_name in [SHEET_NAME_KL_2024]:
     #     return lambda t: parser_2024_kl(t), 0
-    # if sheet_name in [SHEET_NAME_ROS_2024]:
-    #     return lambda t: parser_2024_ros(t), 1
+    if sheet_name in [SHEET_NAME_ROS_2024]:
+        return lambda t: parser_2024_ros(t), 1 # rows to skip
     # if sheet_name in [SHEET_NAME_SAM_2024]:
     #     return lambda t: parser_2024_sam(t), 0
     # if sheet_name in [SHEET_NAME_EKB_2024]:

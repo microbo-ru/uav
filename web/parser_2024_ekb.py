@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 def parser_2024_ekb(row):
     # logger.info(row)
+    
     res = DATA_ROW.copy()
     res[COL_REGION] = SHEET_NAME_EKB_2024
     res[COL_DATE] = row["Дата, время вылета факт."]

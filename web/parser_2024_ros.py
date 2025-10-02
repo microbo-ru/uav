@@ -20,18 +20,25 @@ logger = logging.getLogger(__name__)
 
 def parser_2024_ros(row):
     # logger.info(row)
+
     res = DATA_ROW.copy()
     res[COL_REGION] = SHEET_NAME_ROS_2024
+
+    if row["Дата"] == 3:
+        return res
+    if row["Дата"] == None:
+        return res
+
     res[COL_DATE] = row["Дата"]
-    # res[COL_FLIGHT] = row[COL_FLIGHT]
-    # res[COL_BOARD] = row[COL_BOARD]
+    res[COL_FLIGHT] = row["Рейс"]
+    res[COL_BOARD] = row["Борт"]
     # res[COL_TYPE] = row[COL_TYPE]
-    # res[COL_DEP] = row[COL_DEP]
-    # res[COL_ARR] = row[COL_ARR]
-    # res[COL_APB] = row[COL_APB]
+    res[COL_DEP] = row["Т выл. факт"]
+    res[COL_ARR] = row["Т пос. факт"]
+    res[COL_APB] = row["А/В название"]
     # res[COL_AB] = row[COL_AB]
-    # res[COL_ARP] = row[COL_ARP]
+    res[COL_ARP] = row["А/Н название"]
     # res[COL_AP] = row[COL_AP]
-    # res[COL_ROUTE] = row[COL_ROUTE]
+    res[COL_ROUTE] = row["Маршрут"]
 
     return res
