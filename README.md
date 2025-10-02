@@ -1,17 +1,19 @@
-# uav
+# UAV
 Сервис для анализа количества и длительности полетов гражданских беспилотников в регионах Российской Федерации для определения полетной активности на основе данных Росавиации
 
-# Run locally
+# Run
+
 ```
 docker compose up -d
 ```
 
-# Live view (use HTTP only!):
+# Live view (use HTTP only!)
 
 http://microbo.ru:8501/
 
 http://microbo.ru:8000/docs
 
+# Примеры
 Пример 1
 
 ![Пример 1](/docs/spb.png)
