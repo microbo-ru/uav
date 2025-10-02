@@ -1,4 +1,6 @@
 from datetime import datetime
+import re
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -29,7 +31,6 @@ COL_AB = "А/В"
 COL_ARP="АРП"
 COL_AP = "А/П"
 COL_ROUTE="Маршрут"
-# COL_FIELD18="Поле 18"
 
 DATA_ROW = {
     COL_REGION: "undefined", 
@@ -54,3 +55,58 @@ def try_parse_datetime(date_string, row_name, sheet_name):
     except ValueError:
         logger.error(f"Failed to parse date: {date_string}, row_name: {row_name}, sheet_name: {sheet_name}")
         return None
+def group_and_log(res, col, value, row_name, sheet_name):
+    if value:
+        res[col] = value.group(1).strip()
+    else:
+        res[col] = None
+        logger.warning(f"{col} not found in the row: {row_name}, sheet_name: {sheet_name}")
+
+def set_and_log(res, col, value, row_name, sheet_name):
+    if value:
+        res[col] = value.removeprefix('-')
+    else:
+        res[col] = None
+        logger.warning(f"{col} not found in the row: {row_name}, sheet_name: {sheet_name}")
+
+def set_from_shr(res, shr, row_name, sheet_name):
+    shr_list = shr.split('\n')
+
+    dof = re.search(r'DOF/(\d{6})', shr)
+    group_and_log(res, COL_DATE, dof, row_name, sheet_name)
+
+    flight_id = re.search(r'SHR-([^\n]+)', shr)
+    group_and_log(res, COL_FLIGHT, flight_id, row_name, sheet_name)
+
+    board = re.search(r'REG/([^\s]+)', shr)
+    group_and_log(res, COL_BOARD, board, row_name, sheet_name)
+
+    flight_type = re.search(r'TYP/([^\s]+)', shr)
+    group_and_log(res, COL_TYPE, flight_type, row_name, sheet_name)
+
+    shr_cut = [(idx, t.strip()) for idx, t in enumerate(shr_list) if len(t.strip()) == 9 and t.startswith("-")]
+    # print(shr_cut, shr_cut[0][1]) [(1, '-ZZZZ0705')] -ZZZZ0705
+    if len(shr_cut) == 2:
+        set_and_log(res, COL_AB, shr_cut[0][1][:5], row_name, sheet_name)
+        set_and_log(res, COL_DEP, shr_cut[0][1][5:], row_name, sheet_name)
+        set_and_log(res, COL_AP, shr_cut[1][1][:5], row_name, sheet_name)
+        set_and_log(res, COL_ARR, shr_cut[1][1][5:], row_name,sheet_name)
+        route_idx = shr_cut[0][0] + 1
+        route = shr_list[route_idx]
+        set_and_log(res, COL_ROUTE, route, row_name, sheet_name)
+    elif len(shr_cut) == 1:
+        set_and_log(res, COL_AB, shr_cut[0][1][:5], row_name, sheet_name)
+        set_and_log(res, COL_DEP, shr_cut[0][1][5:], row_name, sheet_name)
+        set_and_log(res, COL_AP, None, row_name, sheet_name)
+        set_and_log(res, COL_ARR, None, row_name, sheet_name)
+        route_idx = shr_cut[0][0] + 1
+        route = shr_list[route_idx]
+        set_and_log(res, COL_ROUTE, route, row_name, sheet_name)
+    else:
+        logger.warning(f"{COL_DEP} and {COL_ARR} not found in the row: {row_name}, sheet_name: {sheet_name}")
+
+    dep_coordinates_match = re.search(r'DEP/(\d\w\d+\w\d+\w)', shr)
+    group_and_log(res, COL_APB, dep_coordinates_match, row_name, sheet_name)
+
+    dest_coordinates_match = re.search(r'DEST/(\d\w\d+\w\d+\w)', shr)
+    group_and_log(res, COL_ARP, dest_coordinates_match, row_name, sheet_name)

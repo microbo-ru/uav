@@ -43,32 +43,32 @@ def get_parser(sheet_name, df_head):
 
     if sheet_name in [SHEET_NAME_MSK_2024]:
         return lambda t: parser_2024_msk(t), 1
-    if sheet_name in [SHEET_NAME_SPB_2024]:
-        return lambda t: parser_2024_spb(t), 0
-    if sheet_name in [SHEET_NAME_KL_2024]:
-        return lambda t: parser_2024_kl(t), 0
-    if sheet_name in [SHEET_NAME_ROS_2024]:
-        return lambda t: parser_2024_ros(t), 1
-    if sheet_name in [SHEET_NAME_SAM_2024]:
-        return lambda t: parser_2024_sam(t), 0
-    if sheet_name in [SHEET_NAME_EKB_2024]:
-        return lambda t: parser_2024_ekb(t), 0
-    if sheet_name in [SHEET_NAME_TU_2024]:
-        return lambda t: parser_2024_tu(t), 0
-    if sheet_name in [SHEET_NAME_NOV_2024]:
-        return lambda t: parser_2024_nov(t), 0
-    if sheet_name in [SHEET_NAME_KR_2024]:
-        return lambda t: parser_2024_kr(t), 0
-    if sheet_name in [SHEET_NAME_IR_2024]:
-        return lambda t: parser_2024_ir(t), 0
-    if sheet_name in [SHEET_NAME_JA_2024]:
-        return lambda t: parser_2024_ja(t), 0
-    if sheet_name in [SHEET_NAME_MA_2024]:
-        return lambda t: parser_2024_ma(t), 2
-    if sheet_name in [SHEET_NAME_HA_2024]:
-        return lambda t: parser_2024_ha(t), 1
-    if sheet_name in [SHEET_NAME_SF_2024]:
-        return lambda t: parser_2024_sf(t), 1
+    # if sheet_name in [SHEET_NAME_SPB_2024]:
+    #     return lambda t: parser_2024_spb(t), 0
+    # if sheet_name in [SHEET_NAME_KL_2024]:
+    #     return lambda t: parser_2024_kl(t), 0
+    # if sheet_name in [SHEET_NAME_ROS_2024]:
+    #     return lambda t: parser_2024_ros(t), 1
+    # if sheet_name in [SHEET_NAME_SAM_2024]:
+    #     return lambda t: parser_2024_sam(t), 0
+    # if sheet_name in [SHEET_NAME_EKB_2024]:
+    #     return lambda t: parser_2024_ekb(t), 0
+    # if sheet_name in [SHEET_NAME_TU_2024]:
+    #     return lambda t: parser_2024_tu(t), 0
+    # if sheet_name in [SHEET_NAME_NOV_2024]:
+    #     return lambda t: parser_2024_nov(t), 0
+    # if sheet_name in [SHEET_NAME_KR_2024]:
+    #     return lambda t: parser_2024_kr(t), 0
+    # if sheet_name in [SHEET_NAME_IR_2024]:
+    #     return lambda t: parser_2024_ir(t), 0
+    # if sheet_name in [SHEET_NAME_JA_2024]:
+    #     return lambda t: parser_2024_ja(t), 0
+    # if sheet_name in [SHEET_NAME_MA_2024]:
+    #     return lambda t: parser_2024_ma(t), 2
+    # if sheet_name in [SHEET_NAME_HA_2024]:
+    #     return lambda t: parser_2024_ha(t), 1
+    # if sheet_name in [SHEET_NAME_SF_2024]:
+    #     return lambda t: parser_2024_sf(t), 1
     elif "Центр ЕС ОрВД" in head_as_string:
         return lambda t: parser_2025(t), 0
     else:
@@ -81,19 +81,20 @@ def create_task(path):
     input_path = Path(path)
     xls = pd.ExcelFile(path)
 
-    # for sheet_name in xls.sheet_names[:14]:
     for sheet_name in xls.sheet_names:
         safe_sheet_name = sheet_name.replace(" ", "_")
         output_path = str(input_path.with_suffix(".csv"))
         output_path = output_path[:-4] + f"_{safe_sheet_name}" + output_path[-4:]
         df = pd.read_excel(xls, sheet_name, nrows=3)
         parser, skiprows = get_parser(sheet_name, df)
+
         df = pd.read_excel(xls, sheet_name, skiprows=skiprows)
+
         if parser is not None:
             extracted_columns = df.apply(parser, axis=1, result_type="expand")
             extracted_columns.to_csv(output_path, index=False, encoding='utf-8-sig')
         else:
-            logger.info("Parser not found")
+            logger.info("Parser not found: %s", sheet_name)
 
     return True
 
