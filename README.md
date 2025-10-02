@@ -14,8 +14,8 @@ http://microbo.ru:8000/docs
 
 Пример 1
 
-![Пример 1][/docs/spb.png]
+![Пример 1](/docs/spb.png)
 
 Пример 2
 
-![Пример 1][/docs/spb_ai.png]
+![Пример 1](/docs/spb_ai.png)
