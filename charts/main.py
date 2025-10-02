@@ -63,7 +63,10 @@ if xlsx_file is not None:
 
                 df = pd.read_csv(csv_file_path)
 
-                st.line_chart(df, y='Регион')
+                # st.line_chart(df, y='Регион')
+                # selected_row = df.iloc[0]
+                # st.bar_chart(selected_row)
+                st.bar_chart(df, x='Регион', y='Тип ВС')
                 # tab1, tab2 = st.tabs(["По дням", "По дням недели"])
                 # tab1 = st.tabs(["По регионам"])
 
